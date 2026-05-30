@@ -23,6 +23,7 @@ var (
 
 type Config struct {
 	Name                   string              `mapstructure:"name" yaml:"name"`
+	Notifier               NotifierConfig      `mapstructure:"notifier" yaml:"notifier"`
 	Telegram               TelegramConfig      `mapstructure:"telegram" yaml:"telegram"`
 	Pushover               PushoverConfig      `mapstructure:"pushover" yaml:"pushover"`
 	Database               DatabaseConfig      `mapstructure:"database" yaml:"database"`
@@ -78,6 +79,10 @@ type FeatureLimitsConfig struct {
 	PlusCircleMaxMembers int `mapstructure:"plus_circle_max_members" yaml:"plus_circle_max_members" default:"6"`
 	MaxSubaccounts       int `mapstructure:"max_subaccounts" yaml:"max_subaccounts" default:"1"`
 	PlusMaxSubaccounts   int `mapstructure:"plus_max_subaccounts" yaml:"plus_max_subaccounts" default:"5"`
+}
+
+type NotifierConfig struct {
+	AppHost string `mapstructure:"app_host" yaml:"app_host"`
 }
 
 type TelegramConfig struct {
@@ -274,6 +279,9 @@ func NewConfig() *Config {
 }
 
 func configEnvironmentOverrides(config *Config) {
+	if os.Getenv("DONETICK_NOTIFIER_APP_HOST") != "" {
+		config.Notifier.AppHost = os.Getenv("DONETICK_NOTIFIER_APP_HOST")
+	}
 	if os.Getenv("DONETICK_TELEGRAM_TOKEN") != "" {
 		config.Telegram.Token = os.Getenv("DONETICK_TELEGRAM_TOKEN")
 	}
